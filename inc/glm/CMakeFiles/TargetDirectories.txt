@@ -1,0 +1,3 @@
+/home/krawacik3/Dokumenty/Code/glm/glm/CMakeFiles/edit_cache.dir
+/home/krawacik3/Dokumenty/Code/glm/glm/CMakeFiles/rebuild_cache.dir
+/home/krawacik3/Dokumenty/Code/glm/glm/CMakeFiles/glm_dummy.dir
