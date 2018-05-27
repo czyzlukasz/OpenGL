@@ -180,7 +180,7 @@ class Buffer
     //EBO - element buffer object.
     unsigned int EBO;
 
-    void Buffer::SetBufferData(unsigned int, std::vector <float>, unsigned int, std::vector <unsigned int>);
+    void SetBufferData(unsigned int, std::vector <float>, unsigned int, std::vector <unsigned int>);
 
     Buffer()
     {
