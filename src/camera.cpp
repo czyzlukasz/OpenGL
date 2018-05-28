@@ -2,6 +2,7 @@
 #include "camera.hpp"
 
 
+
 void Camera::SetProjection(float aspect_ratio, float FOV, float zNear, float zFar)
 {
     projection = glm::perspective(glm::radians(FOV), aspect_ratio, zNear, zFar);

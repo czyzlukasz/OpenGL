@@ -24,14 +24,14 @@ class Camera
     void SetViev(void);
     void SetLastXY(float, float);
 
-    Camera()
+    Camera(void)
     {
         CamPos = glm::vec3(10.0f, 0.0f, 10.0f);
         CamTarget = glm::vec3(10.0f, 0.0f, 11.0f);
         CamDir = glm::vec3(0.0f, 0.0f, 1.0f);
         CamUp = glm::vec3(0.0f, 1.0f, 0.0f);
     }
-
-
 };
+
+
 #endif

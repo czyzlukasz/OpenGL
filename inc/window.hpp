@@ -1,6 +1,8 @@
 #ifndef WINDOW_HPP
 #define WINDOW_HPP
 
+#pragma once
+
 #include <fstream>
 #include <sstream>
 #include <vector>
@@ -128,6 +130,7 @@ class Window
 {
     public:
     GLFWwindow *ID;
+
     Window()
     {
         glfwInit(); 
@@ -181,6 +184,8 @@ class Buffer
     unsigned int EBO;
 
     void SetBufferData(unsigned int, std::vector <float>, unsigned int, std::vector <unsigned int>);
+    void SetBufferData(unsigned int, float*, unsigned int, unsigned int*);
+    void SetBufferSubData();
 
     Buffer()
     {
@@ -190,7 +195,6 @@ class Buffer
         glGenBuffers(1, &EBO);
         
         glBindVertexArray(VAO);
-
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
     }
 };

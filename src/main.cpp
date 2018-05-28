@@ -22,8 +22,22 @@ void processInputMouseForwarder(void* context, GLFWwindow* window, double xpos, 
  */
 // GLFWwindow *window;
 
-    Camera camera;
 
+float vertices[] = {
+    // first triangle
+     2.5f,  6.5f, 2.0f,  // top right
+     6.5f, -5.5f, 3.0f,  // bottom right
+    -8.5f,  4.5f, 4.0f,  // top left 
+    // second triangle
+     4.5f, -3.5f, 5.0f,  // bottom right
+    -6.5f, -2.5f, 6.0f,  // bottom left
+    -2.5f,  1.5f, 7.0f   // top left
+}; 
+unsigned int indices[] = { 
+    0, 1, 3,   // first triangle
+    1, 2, 3    // second triangle
+};  
+Camera camera;
 
 int main (void)
 {
@@ -34,7 +48,7 @@ int main (void)
     //Source code of vertex and fragment shaders. 
     Shader shader("src/VertexShader", "src/FragmentShader");
     Buffer buffer;
-    Map map(1024);
+    Map map(128);
 
 
     //Set callback functions for processing mouse inputs.
@@ -44,18 +58,41 @@ int main (void)
     int frames = 0;
     float currentTime = glfwGetTime();
 
+    // map.Add_vertices(vertices, sizeof(vertices), indices, sizeof(indices));
+    map.Add_vertices(vertices, sizeof(vertices));
+
+    for(int i = 0; i < map.Get_v_array_size(); i += 3)
+    {
+        cout << map.vertices[i] << "\t ";
+        cout << map.vertices[i+1] << "\t ";
+        cout << map.vertices[i+ 2] << "\n ";
+        
+    }
+    for(int i = 0; i < map.Get_i_array_size(); i += 1)
+    {
+        cout << map.indices[i] << "\n ";
+        
+    }
+    cout << map.Get_i_array_size() << "\n";
+
     //Send data to GPU.
     buffer.SetBufferData(map.Get_v_array_size() * sizeof(float), map.Get_vertices(),
                          map.Get_i_array_size() * sizeof(unsigned int), map.Get_indices());
+
+    // buf.SetBufferData(sizeof(vertices) * sizeof(float), vertices,
+    //                      sizeof(indices) * sizeof(unsigned int), indices);
+
+
     cout << "Number of triangles: " << map.Get_v_array_size() * sizeof(float) / 3 << "\n";
+
     /*
      *  Render loop keeps window refreshing as long
      *  as user decides to close it.
      */
-    // cout << map.i_array_size << "    " <<  map.v_array_size << endl;
     while(!glfwWindowShouldClose(window.ID))
     {
-              
+        vertices[1] = glfwGetTime();
+        map.Add_vertices(vertices, sizeof(vertices));
 
         glm::mat4 model;
 
@@ -63,14 +100,10 @@ int main (void)
         glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // float timeValue = glfwGetTime();
-
-        // map.vertices[1] = glfwGetTime();
         glUseProgram(shader.ID);
         glBindVertexArray(buffer.VAO);
         camera.SetProjection((float)(WINDOW_SIZE_X / WINDOW_SIZE_Y));
         camera.view = glm::translate(camera.view, glm::vec3(0.0f, 0.0f, -3.0f));
-
 
         glUniformMatrix4fv(glGetUniformLocation(shader.ID, "projection"), 1, GL_FALSE, &camera.projection[0][0]);
 
@@ -82,8 +115,8 @@ int main (void)
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         glUniformMatrix4fv(glGetUniformLocation(shader.ID, "model"), 1, GL_FALSE, &model[0][0]); 
         glUniformMatrix4fv(glGetUniformLocation(shader.ID, "view"), 1, GL_FALSE, &camera.view[0][0]);
-        // glDrawArrays(GL_TRIANGLES, 0, 100);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer.EBO);
+        // glDrawArrays(GL_TRIANGLES, 0, map.Get_v_array_size());
         glDrawElements(GL_TRIANGLES, map.Get_i_array_size(), GL_UNSIGNED_INT, 0);
 
 
@@ -91,12 +124,17 @@ int main (void)
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         glUniformMatrix4fv(glGetUniformLocation(shader.ID, "model"), 1, GL_FALSE, &model[0][0]); 
         glUniformMatrix4fv(glGetUniformLocation(shader.ID, "view"), 1, GL_FALSE, &camera.view[0][0]);
-        // glDrawArrays(GL_TRIANGLES, 0, 200);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer.EBO);
+        // glDrawArrays(GL_TRIANGLES, 0, map.Get_v_array_size());
         glDrawElements(GL_TRIANGLES, map.Get_i_array_size(), GL_UNSIGNED_INT, 0);
         glClearDepth(1);
 
+        
+        
+        
+        
 
+        
         ++frames;
         glfwSwapBuffers(window.ID);
         glfwPollEvents();   
