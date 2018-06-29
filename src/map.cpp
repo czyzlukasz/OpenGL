@@ -14,13 +14,14 @@ void Map::GenerateTerrain(unsigned int map_length)
         terrain.push_back(coords);
     }
 
-    // PerlinNoise(512, 150);
-    // PerlinNoise(256, 110);
-    // PerlinNoise(128, 30);
-    // PerlinNoise(64, 5);
-    // PerlinNoise(32, 3);
-    // PerlinNoise(16, 2);
+    PerlinNoise(512, 150);
+    PerlinNoise(256, 110);
+    PerlinNoise(128, 30);
+    PerlinNoise(64, 5);
+    PerlinNoise(32, 3);
+    PerlinNoise(16, 2);
     // PerlinNoise(16,10);
+
 
     for(unsigned int i = 0; i < map_length * map_length; ++i)
     {

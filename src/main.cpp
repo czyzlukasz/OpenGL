@@ -48,7 +48,7 @@ int main (void)
     //Source code of vertex and fragment shaders. 
     Shader shader("src/VertexShader", "src/FragmentShader");
     Buffer buffer;
-    Map map(128);
+    Map map(512);
 
 
     //Set callback functions for processing mouse inputs.
