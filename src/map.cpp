@@ -20,6 +20,7 @@ void Map::GenerateTerrain(unsigned int map_length)
     // PerlinNoise(64, 5);
     // PerlinNoise(32, 3);
     // PerlinNoise(16, 2);
+    // PerlinNoise(16,10);
 
     for(unsigned int i = 0; i < map_length * map_length; ++i)
     {

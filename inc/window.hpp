@@ -185,17 +185,10 @@ class Buffer
 
     void SetBufferData(unsigned int, std::vector <float>, unsigned int, std::vector <unsigned int>);
     void SetBufferData(unsigned int, float*, unsigned int, unsigned int*);
-    void SetBufferSubData();
-
+    void SendBuffer(unsigned int);
     Buffer()
     {
-        //Generate buffers.
-        glGenVertexArrays(1, &VAO);
-        glGenBuffers(1, &VBO);
-        glGenBuffers(1, &EBO);
-        
-        glBindVertexArray(VAO);
-        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
     }
 };
 

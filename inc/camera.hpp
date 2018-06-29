@@ -13,6 +13,7 @@ class Camera
     public:
     glm::vec3 CamPos, CamTarget, CamDir, CamUp;
 
+    glm::mat4 model;
     glm::mat4 view;
     glm::mat4 projection; 
 
@@ -23,6 +24,7 @@ class Camera
     void SetProjection(float, float FOV = 45.0f, float zNear = 0.1f, float zFar = 5000.0f);
     void SetViev(void);
     void SetLastXY(float, float);
+    void SetMVP(unsigned int, float);
 
     Camera(void)
     {

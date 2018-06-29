@@ -59,28 +59,29 @@ int main (void)
     float currentTime = glfwGetTime();
 
     // map.Add_vertices(vertices, sizeof(vertices), indices, sizeof(indices));
-    map.Add_vertices(vertices, sizeof(vertices));
+    // map.Add_vertices(vertices, sizeof(vertices));
 
-    for(int i = 0; i < map.Get_v_array_size(); i += 3)
-    {
-        cout << map.vertices[i] << "\t ";
-        cout << map.vertices[i+1] << "\t ";
-        cout << map.vertices[i+ 2] << "\n ";
+    // for(int i = 0; i < map.Get_v_array_size(); i += 3)
+    // {
+    //     cout << map.vertices[i] << "\t ";
+    //     cout << map.vertices[i+1] << "\t ";
+    //     cout << map.vertices[i+ 2] << "\n ";
         
-    }
-    for(int i = 0; i < map.Get_i_array_size(); i += 1)
-    {
-        cout << map.indices[i] << "\n ";
+    // }
+    // for(int i = 0; i < map.Get_i_array_size(); i += 1)
+    // {
+    //     cout << map.indices[i] << "\n ";
         
-    }
+    // }
     cout << map.Get_i_array_size() << "\n";
+
+
+    // buffer.SetBufferData(sizeof(vertices) * sizeof(float), vertices,
+    //                      sizeof(indices) * sizeof(unsigned int), indices);
 
     //Send data to GPU.
     buffer.SetBufferData(map.Get_v_array_size() * sizeof(float), map.Get_vertices(),
-                         map.Get_i_array_size() * sizeof(unsigned int), map.Get_indices());
-
-    // buf.SetBufferData(sizeof(vertices) * sizeof(float), vertices,
-    //                      sizeof(indices) * sizeof(unsigned int), indices);
+                            map.Get_i_array_size() * sizeof(unsigned int), map.Get_indices());
 
 
     cout << "Number of triangles: " << map.Get_v_array_size() * sizeof(float) / 3 << "\n";
@@ -91,47 +92,40 @@ int main (void)
      */
     while(!glfwWindowShouldClose(window.ID))
     {
-        vertices[1] = glfwGetTime();
-        map.Add_vertices(vertices, sizeof(vertices));
 
-        glm::mat4 model;
+
+
+        map.vertices[1] = glfwGetTime();
 
         //Set the background color.
         glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        glBufferSubData(GL_ARRAY_BUFFER, 3 * sizeof(float), sizeof(vertices)*sizeof(float), vertices);
         glUseProgram(shader.ID);
         glBindVertexArray(buffer.VAO);
-        camera.SetProjection((float)(WINDOW_SIZE_X / WINDOW_SIZE_Y));
-        camera.view = glm::translate(camera.view, glm::vec3(0.0f, 0.0f, -3.0f));
-
-        glUniformMatrix4fv(glGetUniformLocation(shader.ID, "projection"), 1, GL_FALSE, &camera.projection[0][0]);
-
-
-        camera.view = glm::lookAt(camera.CamPos, camera.CamPos + camera.CamDir, camera.CamUp);
-
-        int vertexColorLocation = glGetUniformLocation(shader.ID, "ourColor");
-        glUniform4f(vertexColorLocation, 0, 1, 0, 1.0f);
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-        glUniformMatrix4fv(glGetUniformLocation(shader.ID, "model"), 1, GL_FALSE, &model[0][0]); 
-        glUniformMatrix4fv(glGetUniformLocation(shader.ID, "view"), 1, GL_FALSE, &camera.view[0][0]);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer.EBO);
-        // glDrawArrays(GL_TRIANGLES, 0, map.Get_v_array_size());
-        glDrawElements(GL_TRIANGLES, map.Get_i_array_size(), GL_UNSIGNED_INT, 0);
-
-
-        glUniform4f(vertexColorLocation, 0, 0, 0, 1.0f);
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        glUniformMatrix4fv(glGetUniformLocation(shader.ID, "model"), 1, GL_FALSE, &model[0][0]); 
-        glUniformMatrix4fv(glGetUniformLocation(shader.ID, "view"), 1, GL_FALSE, &camera.view[0][0]);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer.EBO);
-        // glDrawArrays(GL_TRIANGLES, 0, map.Get_v_array_size());
-        glDrawElements(GL_TRIANGLES, map.Get_i_array_size(), GL_UNSIGNED_INT, 0);
-        glClearDepth(1);
-
         
         
-        
+
+        // glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 1000 * sizeof(unsigned int), sizeof(indices)*sizeof(unsigned int), indices);
+
+        buffer.SendBuffer(map.Get_v_array_size()*sizeof(float));
+        camera.SetMVP(shader.ID, (float) WINDOW_SIZE_X/WINDOW_SIZE_Y);
+        cout << "V: " << map.Get_v_array_size() << "\n";
+        cout << "I: " << map.Get_i_array_size() << "\n";
+        cout << "VBO: " << buffer.VBO << "\n";
+        cout << "VAO: " << buffer.VAO << "\n";
+
+        // glUniform4f(vertexColorLocation, 0, 1, 0, 1.0f);
+        // glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        // glUniformMatrix4fv(glGetUniformLocation(shader.ID, "model"), 1, GL_FALSE, &model[0][0]); 
+        // glUniformMatrix4fv(glGetUniformLocation(shader.ID, "view"), 1, GL_FALSE, &camera.view[0][0]);
+        // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer.EBO);
+        // // glDrawArrays(GL_TRIANGLES, 0, map.Get_v_array_size());
+        // glDrawElements(GL_TRIANGLES, map.Get_i_array_size(), GL_UNSIGNED_INT, 0);
+
+
+
         
 
         
