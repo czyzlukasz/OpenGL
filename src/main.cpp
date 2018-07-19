@@ -22,18 +22,16 @@ void processInputMouseForwarder(void* context, GLFWwindow* window, double xpos, 
  */
 // GLFWwindow *window;
 
-    Camera camera;
-
-
 int main (void)
 {
-
     //Initialise and set the window.
     Window window;
 
+
     //Source code of vertex and fragment shaders. 
     Shader shader("src/VertexShader", "src/FragmentShader");
-    Buffer buffer;
+
+    Buffer::BufferInit();
     Map map(1024);
 
 
@@ -45,7 +43,7 @@ int main (void)
     float currentTime = glfwGetTime();
 
     //Send data to GPU.
-    buffer.SetBufferData(map.Get_v_array_size() * sizeof(float), map.Get_vertices(),
+    Buffer::SetBufferData(map.Get_v_array_size() * sizeof(float), map.Get_vertices(),
                          map.Get_i_array_size() * sizeof(unsigned int), map.Get_indices());
     cout << "Number of triangles: " << map.Get_v_array_size() * sizeof(float) / 3 << "\n";
     /*
@@ -67,32 +65,32 @@ int main (void)
 
         // map.vertices[1] = glfwGetTime();
         glUseProgram(shader.ID);
-        glBindVertexArray(buffer.VAO);
-        camera.SetProjection((float)(WINDOW_SIZE_X / WINDOW_SIZE_Y));
-        camera.view = glm::translate(camera.view, glm::vec3(0.0f, 0.0f, -3.0f));
+        glBindVertexArray(Buffer::VAO);
+        Camera::SetProjection((float)(WINDOW_SIZE_X / WINDOW_SIZE_Y));
+        Camera::view = glm::translate(Camera::view, glm::vec3(0.0f, 0.0f, -3.0f));
 
 
-        glUniformMatrix4fv(glGetUniformLocation(shader.ID, "projection"), 1, GL_FALSE, &camera.projection[0][0]);
+        glUniformMatrix4fv(glGetUniformLocation(shader.ID, "projection"), 1, GL_FALSE, &Camera::projection[0][0]);
 
 
-        camera.view = glm::lookAt(camera.CamPos, camera.CamPos + camera.CamDir, camera.CamUp);
+        Camera::view = glm::lookAt(Camera::CamPos, Camera::CamPos + Camera::CamDir, Camera::CamUp);
 
         int vertexColorLocation = glGetUniformLocation(shader.ID, "ourColor");
         glUniform4f(vertexColorLocation, 0, 1, 0, 1.0f);
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         glUniformMatrix4fv(glGetUniformLocation(shader.ID, "model"), 1, GL_FALSE, &model[0][0]); 
-        glUniformMatrix4fv(glGetUniformLocation(shader.ID, "view"), 1, GL_FALSE, &camera.view[0][0]);
+        glUniformMatrix4fv(glGetUniformLocation(shader.ID, "view"), 1, GL_FALSE, &Camera::view[0][0]);
         // glDrawArrays(GL_TRIANGLES, 0, 100);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer.EBO);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, Buffer::EBO);
         glDrawElements(GL_TRIANGLES, map.Get_i_array_size(), GL_UNSIGNED_INT, 0);
 
 
         glUniform4f(vertexColorLocation, 0, 0, 0, 1.0f);
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         glUniformMatrix4fv(glGetUniformLocation(shader.ID, "model"), 1, GL_FALSE, &model[0][0]); 
-        glUniformMatrix4fv(glGetUniformLocation(shader.ID, "view"), 1, GL_FALSE, &camera.view[0][0]);
+        glUniformMatrix4fv(glGetUniformLocation(shader.ID, "view"), 1, GL_FALSE, &Camera::view[0][0]);
         // glDrawArrays(GL_TRIANGLES, 0, 200);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer.EBO);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, Buffer::EBO);
         glDrawElements(GL_TRIANGLES, map.Get_i_array_size(), GL_UNSIGNED_INT, 0);
         glClearDepth(1);
 
@@ -132,70 +130,69 @@ void processInputKey(GLFWwindow *window)
 
     if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS)
     {    
-        camera.CamPos = glm::vec3(0.0f, 0.0f, 0.0f);
-        camera.CamDir = glm::vec3(0.0f, 0.0f, -1.0f);
+        Camera::CamPos = glm::vec3(0.0f, 0.0f, 0.0f);
+        Camera::CamDir = glm::vec3(0.0f, 0.0f, -1.0f);
     }
 
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
     {
-        camera.CamPos -= camera.CamDir * camera.sensitivity;
+        Camera::CamPos -= Camera::CamDir * Camera::movementSpeed;
     }
 
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
     {
-        camera.CamPos += camera.CamDir * camera.sensitivity;
+        Camera::CamPos += Camera::CamDir * Camera::movementSpeed;
     }
 
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
     {
-        camera.CamPos -= glm::normalize(glm::cross(camera.CamDir, camera.CamUp)) * camera.sensitivity;
+        Camera::CamPos -= glm::normalize(glm::cross(Camera::CamDir, Camera::CamUp)) * Camera::movementSpeed;
     }
 
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     {
-        camera.CamPos += glm::normalize(glm::cross(camera.CamDir, camera.CamUp)) * camera.sensitivity;
+        Camera::CamPos += glm::normalize(glm::cross(Camera::CamDir, Camera::CamUp)) * Camera::movementSpeed;
     }
 
     if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
     {
-        camera.CamPos -= glm::normalize(glm::cross(glm::cross(camera.CamUp, camera.CamDir), camera.CamDir)) * camera.sensitivity;
+        Camera::CamPos -= glm::normalize(glm::cross(glm::cross(Camera::CamUp, Camera::CamDir), Camera::CamDir)) * Camera::movementSpeed;
     }
 
     if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS)
     {
-        camera.CamPos += glm::normalize(glm::cross(glm::cross(camera.CamUp, camera.CamDir), camera.CamDir)) * camera.sensitivity;
+        Camera::CamPos += glm::normalize(glm::cross(glm::cross(Camera::CamUp, Camera::CamDir), Camera::CamDir)) * Camera::movementSpeed;
     }
 }
 
 void processInputMouse(GLFWwindow* window, double xpos, double ypos)
 {
-    float dx = xpos - camera.lastX;
-    float dy = camera.lastY - ypos;
+    float dx = xpos - Camera::lastX;
+    float dy = Camera::lastY - ypos;
 
-    float sensitivity = 0.05f;
-    dx *= sensitivity;
-    dy *= sensitivity;
+    dx *= Camera::sensitivity;
+    dy *= Camera::sensitivity;
 
-    camera.lastX = xpos;
-    camera.lastY = ypos;
+    Camera::lastX = xpos;
+    Camera::lastY = ypos;
     
     
-    camera.yaw   += dx;
-    camera.pitch += dy;
-    if(camera.pitch > 89.0f)
-        camera.pitch =  89.0f;
-    if(camera.pitch < -89.0f)
-        camera.pitch = -89.0f;
+    Camera::yaw   += dx;
+    Camera::pitch += dy;
+    if(Camera::pitch > 89.0f)
+        Camera::pitch =  89.0f;
+    if(Camera::pitch < -89.0f)
+        Camera::pitch = -89.0f;
 
-    camera.CamDir.x = cos(glm::radians(camera.pitch)) * cos(glm::radians(camera.yaw));
-    camera.CamDir.y = sin(glm::radians(camera.pitch));
-    camera.CamDir.z = cos(glm::radians(camera.pitch)) * sin(glm::radians(camera.yaw));
-    camera.CamDir = glm::normalize(camera.CamDir);
+    Camera::CamDir.x = cos(glm::radians(Camera::pitch)) * cos(glm::radians(Camera::yaw));
+    Camera::CamDir.y = sin(glm::radians(Camera::pitch));
+    Camera::CamDir.z = cos(glm::radians(Camera::pitch)) * sin(glm::radians(Camera::yaw));
+    Camera::CamDir = glm::normalize(Camera::CamDir);
 }
 
 void processInputScroll(GLFWwindow* window, double xpos, double ypos)
 {
-    camera.sensitivity +=ypos/10;
-    if(camera.sensitivity < 0) camera.sensitivity = 0.05;
-    if(camera.sensitivity > 2) camera.sensitivity = 2;
+    Camera::movementSpeed +=ypos/10;
+    if(Camera::movementSpeed < 0) Camera::movementSpeed = 0.05;
+    if(Camera::movementSpeed > 2) Camera::movementSpeed = 2;
 }

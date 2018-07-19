@@ -1,6 +1,5 @@
 #include <iostream>
 #include "window.hpp"
-#include "camera.hpp"
 
 
 
@@ -33,3 +32,6 @@ void Buffer::SetBufferData(unsigned int size_v, std::vector <float> vertices, un
     glBindVertexArray(0); 
     glDisableVertexAttribArray(0);
 }
+unsigned int Buffer::VAO{};
+unsigned int Buffer::VBO{};
+unsigned int Buffer::EBO{};

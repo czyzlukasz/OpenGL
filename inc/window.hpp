@@ -174,15 +174,15 @@ class Buffer
     public:
 
     //VAO - vertex array object.
-    unsigned int VAO;
+    static unsigned int VAO;
     //VBO - vertex buffer object.
-    unsigned int VBO;
+    static unsigned int VBO;
     //EBO - element buffer object.
-    unsigned int EBO;
+    static unsigned int EBO;
 
-    void Buffer::SetBufferData(unsigned int, std::vector <float>, unsigned int, std::vector <unsigned int>);
+    static void SetBufferData(unsigned int, std::vector <float>, unsigned int, std::vector <unsigned int>);
 
-    Buffer()
+    static void BufferInit()
     {
         //Generate buffers.
         glGenVertexArrays(1, &VAO);
