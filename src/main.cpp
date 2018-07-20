@@ -8,6 +8,8 @@
 #include "camera.hpp"
 #include "window.hpp"
 #include "map.hpp"
+#include "ioprocess.hpp"
+#include "object.hpp"
 
 
 using namespace std;
@@ -17,44 +19,47 @@ void processInputMouse(GLFWwindow* window, double xpos, double ypos);
 void processInputScroll(GLFWwindow* window, double xpos, double ypos); 
 void processInputMouseForwarder(void* context, GLFWwindow* window, double xpos, double ypos);
 
-/*
- *  Window object holding all data of current window.
- */
-// GLFWwindow *window;
 
 int main (void)
 {
     //Initialise and set the window.
-    Window window;
+    Window::WindowInit();
 
 
     //Source code of vertex and fragment shaders. 
-    Shader shader("src/VertexShader", "src/FragmentShader");
+    Shader::ShaderInit("src/VertexShader", "src/FragmentShader");
 
     Buffer::BufferInit();
-    Map map(1024);
+    Map map(32);
 
 
     //Set callback functions for processing mouse inputs.
-    glfwSetCursorPosCallback(window.ID, processInputMouse);
-    glfwSetScrollCallback(window.ID, processInputScroll); 
+    glfwSetCursorPosCallback(Window::ID, Iopcs::processInputMouse);
+    glfwSetScrollCallback(Window::ID, Iopcs::processInputScroll); 
 
     int frames = 0;
     float currentTime = glfwGetTime();
 
+    
     //Send data to GPU.
     Buffer::SetBufferData(map.Get_v_array_size() * sizeof(float), map.Get_vertices(),
-                         map.Get_i_array_size() * sizeof(unsigned int), map.Get_indices());
+                          map.Get_i_array_size() * sizeof(unsigned int), map.Get_indices());
     cout << "Number of triangles: " << map.Get_v_array_size() * sizeof(float) / 3 << "\n";
+
+    glUseProgram(Shader::ID);
+    glBindVertexArray(Buffer::VAO);
+    Camera::SetProjection((float)(WINDOW_SIZE_X / WINDOW_SIZE_Y));
+
     /*
      *  Render loop keeps window refreshing as long
      *  as user decides to close it.
      */
-    // cout << map.i_array_size << "    " <<  map.v_array_size << endl;
-    while(!glfwWindowShouldClose(window.ID))
+    while(!glfwWindowShouldClose(Window::ID))
     {
               
 
+
+        
         glm::mat4 model;
 
         //Set the background color.
@@ -64,31 +69,29 @@ int main (void)
         // float timeValue = glfwGetTime();
 
         // map.vertices[1] = glfwGetTime();
-        glUseProgram(shader.ID);
-        glBindVertexArray(Buffer::VAO);
-        Camera::SetProjection((float)(WINDOW_SIZE_X / WINDOW_SIZE_Y));
+
         Camera::view = glm::translate(Camera::view, glm::vec3(0.0f, 0.0f, -3.0f));
 
 
-        glUniformMatrix4fv(glGetUniformLocation(shader.ID, "projection"), 1, GL_FALSE, &Camera::projection[0][0]);
+        glUniformMatrix4fv(glGetUniformLocation(Shader::ID, "projection"), 1, GL_FALSE, &Camera::projection[0][0]);
 
 
         Camera::view = glm::lookAt(Camera::CamPos, Camera::CamPos + Camera::CamDir, Camera::CamUp);
 
-        int vertexColorLocation = glGetUniformLocation(shader.ID, "ourColor");
+        int vertexColorLocation = glGetUniformLocation(Shader::ID, "ourColor");
+
         glUniform4f(vertexColorLocation, 0, 1, 0, 1.0f);
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-        glUniformMatrix4fv(glGetUniformLocation(shader.ID, "model"), 1, GL_FALSE, &model[0][0]); 
-        glUniformMatrix4fv(glGetUniformLocation(shader.ID, "view"), 1, GL_FALSE, &Camera::view[0][0]);
-        // glDrawArrays(GL_TRIANGLES, 0, 100);
+        glUniformMatrix4fv(glGetUniformLocation(Shader::ID, "model"), 1, GL_FALSE, &model[0][0]); 
+        glUniformMatrix4fv(glGetUniformLocation(Shader::ID, "view"), 1, GL_FALSE, &Camera::view[0][0]);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, Buffer::EBO);
         glDrawElements(GL_TRIANGLES, map.Get_i_array_size(), GL_UNSIGNED_INT, 0);
 
 
         glUniform4f(vertexColorLocation, 0, 0, 0, 1.0f);
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        glUniformMatrix4fv(glGetUniformLocation(shader.ID, "model"), 1, GL_FALSE, &model[0][0]); 
-        glUniformMatrix4fv(glGetUniformLocation(shader.ID, "view"), 1, GL_FALSE, &Camera::view[0][0]);
+        glUniformMatrix4fv(glGetUniformLocation(Shader::ID, "model"), 1, GL_FALSE, &model[0][0]); 
+        glUniformMatrix4fv(glGetUniformLocation(Shader::ID, "view"), 1, GL_FALSE, &Camera::view[0][0]);
         // glDrawArrays(GL_TRIANGLES, 0, 200);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, Buffer::EBO);
         glDrawElements(GL_TRIANGLES, map.Get_i_array_size(), GL_UNSIGNED_INT, 0);
@@ -96,11 +99,11 @@ int main (void)
 
 
         ++frames;
-        glfwSwapBuffers(window.ID);
+        glfwSwapBuffers(Window::ID);
         glfwPollEvents();   
-        processInputKey(window.ID);
+        Iopcs::processInputKey(Window::ID);
         glFlush();
-        // glfwSwapBuffers(window.ID);
+        // glfwSwapBuffers(Window::ID);
 
     }
 
@@ -112,87 +115,4 @@ int main (void)
      */
     glfwTerminate();
     return 0;
-}
-
-/*
- *  Function interfacing program with keyboard.
- */
-
-void processInputKey(GLFWwindow *window)
-{
-
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, true);
-    if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-    if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS)
-    {    
-        Camera::CamPos = glm::vec3(0.0f, 0.0f, 0.0f);
-        Camera::CamDir = glm::vec3(0.0f, 0.0f, -1.0f);
-    }
-
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-    {
-        Camera::CamPos -= Camera::CamDir * Camera::movementSpeed;
-    }
-
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-    {
-        Camera::CamPos += Camera::CamDir * Camera::movementSpeed;
-    }
-
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-    {
-        Camera::CamPos -= glm::normalize(glm::cross(Camera::CamDir, Camera::CamUp)) * Camera::movementSpeed;
-    }
-
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-    {
-        Camera::CamPos += glm::normalize(glm::cross(Camera::CamDir, Camera::CamUp)) * Camera::movementSpeed;
-    }
-
-    if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
-    {
-        Camera::CamPos -= glm::normalize(glm::cross(glm::cross(Camera::CamUp, Camera::CamDir), Camera::CamDir)) * Camera::movementSpeed;
-    }
-
-    if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS)
-    {
-        Camera::CamPos += glm::normalize(glm::cross(glm::cross(Camera::CamUp, Camera::CamDir), Camera::CamDir)) * Camera::movementSpeed;
-    }
-}
-
-void processInputMouse(GLFWwindow* window, double xpos, double ypos)
-{
-    float dx = xpos - Camera::lastX;
-    float dy = Camera::lastY - ypos;
-
-    dx *= Camera::sensitivity;
-    dy *= Camera::sensitivity;
-
-    Camera::lastX = xpos;
-    Camera::lastY = ypos;
-    
-    
-    Camera::yaw   += dx;
-    Camera::pitch += dy;
-    if(Camera::pitch > 89.0f)
-        Camera::pitch =  89.0f;
-    if(Camera::pitch < -89.0f)
-        Camera::pitch = -89.0f;
-
-    Camera::CamDir.x = cos(glm::radians(Camera::pitch)) * cos(glm::radians(Camera::yaw));
-    Camera::CamDir.y = sin(glm::radians(Camera::pitch));
-    Camera::CamDir.z = cos(glm::radians(Camera::pitch)) * sin(glm::radians(Camera::yaw));
-    Camera::CamDir = glm::normalize(Camera::CamDir);
-}
-
-void processInputScroll(GLFWwindow* window, double xpos, double ypos)
-{
-    Camera::movementSpeed +=ypos/10;
-    if(Camera::movementSpeed < 0) Camera::movementSpeed = 0.05;
-    if(Camera::movementSpeed > 2) Camera::movementSpeed = 2;
 }

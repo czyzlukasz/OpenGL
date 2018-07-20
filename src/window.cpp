@@ -35,3 +35,14 @@ void Buffer::SetBufferData(unsigned int size_v, std::vector <float> vertices, un
 unsigned int Buffer::VAO{};
 unsigned int Buffer::VBO{};
 unsigned int Buffer::EBO{};
+
+
+unsigned int Shader::ID{};    
+
+string Shader::vertexCode{};
+string Shader::fragmentCode{};
+ifstream Shader::file_vertexCode{};
+ifstream Shader::file_fragmentCode{};
+
+
+GLFWwindow *Window::ID = nullptr;

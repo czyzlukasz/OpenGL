@@ -42,7 +42,7 @@ class Map
     vector <float> Get_vertices(void);
     vector <unsigned int> Get_indices(void);
 
-    Map(unsigned int len = 16)
+    Map(unsigned int len = 32)
     {
         map_length = len;
         
@@ -57,10 +57,10 @@ class Map
             terrain.push_back(coords);
         }
 
-        PerlinNoise(512, 150);
-        PerlinNoise(256, 110);
-        PerlinNoise(128, 30);
-        PerlinNoise(64, 5);
+        // PerlinNoise(512, 150);
+        // PerlinNoise(256, 110);
+        // PerlinNoise(128, 30);
+        // PerlinNoise(64, 5);
         PerlinNoise(32, 3);
         PerlinNoise(16, 2);
         //Set and allocate the size of vertices array.

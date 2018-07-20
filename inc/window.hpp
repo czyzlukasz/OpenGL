@@ -31,14 +31,14 @@ void FrameBufferSize(GLFWwindow* window, int width, int height);
 class Shader
 {
     public:
-    unsigned int ID;
+    static unsigned int ID;
 
     private:
-    string vertexCode, fragmentCode;
-    ifstream file_vertexCode, file_fragmentCode;
+    static string vertexCode, fragmentCode;
+    static ifstream file_vertexCode, file_fragmentCode;
 
     public:
-    Shader(const char* vertexPath, const char* fragmentPath)
+    static void ShaderInit(const char* vertexPath, const char* fragmentPath)
     {
         std::stringstream StreamVertex, StreamFragment;
 
@@ -127,8 +127,8 @@ class Shader
 class Window
 {
     public:
-    GLFWwindow *ID;
-    Window()
+    static GLFWwindow *ID;
+    static void WindowInit()
     {
         glfwInit(); 
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
