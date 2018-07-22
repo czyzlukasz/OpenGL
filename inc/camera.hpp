@@ -21,7 +21,7 @@ class Camera
     static float sensitivity;
     static float movementSpeed;
     
-    static void SetProjection(float, float FOV = 45.0f, float zNear = 0.1f, float zFar = 5000.0f);
+    static void SetProjection(float, float FOV = 45.0f, float zNear = 0.1f, float zFar = 2000.0f);
     void SetViev(void);
     void SetLastXY(float, float);
 

@@ -21,28 +21,23 @@ void Buffer::SetBufferData(unsigned int size_v, std::vector <float> vertices, un
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, size_i, &indices[0], GL_STATIC_DRAW);
 
+    // position attribute
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);   
-    // glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(6 * sizeof(float)));
-    // glEnableVertexAttribArray(1);   
-
+    glEnableVertexAttribArray(0);
+    // normal attribute
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0); 
 
     glBindVertexArray(0); 
+    // glBindVertexArray(1); 
     glDisableVertexAttribArray(0);
 }
 unsigned int Buffer::VAO{};
 unsigned int Buffer::VBO{};
 unsigned int Buffer::EBO{};
 
-
-unsigned int Shader::ID{};    
-
-string Shader::vertexCode{};
-string Shader::fragmentCode{};
-ifstream Shader::file_vertexCode{};
-ifstream Shader::file_fragmentCode{};
 
 
 GLFWwindow *Window::ID = nullptr;

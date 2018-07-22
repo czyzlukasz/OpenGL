@@ -31,14 +31,14 @@ void FrameBufferSize(GLFWwindow* window, int width, int height);
 class Shader
 {
     public:
-    static unsigned int ID;
+    unsigned int ID;
 
     private:
-    static string vertexCode, fragmentCode;
-    static ifstream file_vertexCode, file_fragmentCode;
+    string vertexCode, fragmentCode;
+    ifstream file_vertexCode, file_fragmentCode;
 
     public:
-    static void ShaderInit(const char* vertexPath, const char* fragmentPath)
+    Shader(const char* vertexPath, const char* fragmentPath)
     {
         std::stringstream StreamVertex, StreamFragment;
 
@@ -96,13 +96,15 @@ class Shader
         {
             char errorlog[250];
             glGetShaderInfoLog(vertexShader, sizeof(errorlog), NULL, errorlog);
+            std::cout << "In " << vertexPath << ":" << std::endl;
             std::cout << "Vertex Shader compilation error!" << std::endl << errorlog << std::endl;
         }
         if(!successFragment) 
         {
             char errorlog[250];
             glGetShaderInfoLog(fragmentShader, sizeof(errorlog), NULL, errorlog);
-            std::cout << "Vertex Shader compilation error!" << std::endl << errorlog << std::endl;
+            std::cout << "In " << fragmentPath << ":" << std::endl;
+            std::cout << "Fragment Shader compilation error!" << std::endl << errorlog << std::endl;
         }
         ID = glCreateProgram();
         glAttachShader(ID, vertexShader);

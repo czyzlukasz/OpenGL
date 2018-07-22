@@ -32,6 +32,8 @@
         "sstream": "cpp",
         "tuple": "cpp",
         "utility": "cpp",
-        "fstream": "cpp"
+        "fstream": "cpp",
+        "chrono": "cpp",
+        "ratio": "cpp"
     }
 }

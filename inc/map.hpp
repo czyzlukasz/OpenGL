@@ -20,7 +20,7 @@ class Map
     vector <float> vertices;
     vector <unsigned int> indices;
 
-    //Variables holding value properties needed to generate buffer.
+    //Variables holding value properties' values needed to generate buffer.
     unsigned int v_array_size;
     unsigned int i_array_size;
     unsigned int map_length;
@@ -57,12 +57,12 @@ class Map
             terrain.push_back(coords);
         }
 
-        // PerlinNoise(512, 150);
-        // PerlinNoise(256, 110);
-        // PerlinNoise(128, 30);
-        // PerlinNoise(64, 5);
-        PerlinNoise(32, 3);
-        PerlinNoise(16, 2);
+        PerlinNoise(512, 150);
+        PerlinNoise(256, 110);
+        PerlinNoise(128, 30);
+        PerlinNoise(64, 10);
+        PerlinNoise(32, 8);
+        PerlinNoise(16, 5);
         //Set and allocate the size of vertices array.
         v_array_size = map_length * map_length * 3;
 
