@@ -113,7 +113,7 @@ int main (void)
     glUniformMatrix4fv(glGetUniformLocation(objShader.ID, "model"), 1, GL_FALSE, &model[0][0]); 
     glUniformMatrix4fv(glGetUniformLocation(objShader.ID, "view"), 1, GL_FALSE, &Camera::view[0][0]);
 
-    auto start = chrono::system_clock::now();
+    // auto start = chrono::system_clock::now();
 
     /*
      *  Render loop keeps window refreshing as long
@@ -122,12 +122,12 @@ int main (void)
     while(!glfwWindowShouldClose(Window::ID))
     {
               
-        auto _st = std::chrono::system_clock::now();
+        // auto _st = std::chrono::system_clock::now();
 
         //Set the background color.
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
-        auto _clear = std::chrono::system_clock::now();
+        // auto _clear = std::chrono::system_clock::now();
         // float timeValue = glfwGetTime();
 
         // map.vertices[1] = glfwGetTime();
@@ -139,7 +139,7 @@ int main (void)
 
         glUniform3f(lightPosition, 1 * sin(glfwGetTime()), -2 * sin(glfwGetTime()), 3 * cos(glfwGetTime()));
         
-        auto _vie = std::chrono::system_clock::now();
+        // auto _vie = std::chrono::system_clock::now();
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, Buffer::EBO);
 
         glUniform3f(objColor, 0.1f, 0.9f, 0.2f);
@@ -154,15 +154,15 @@ int main (void)
         
         glClearDepth(1);
 
-        auto _draw = std::chrono::system_clock::now();
+        // auto _draw = std::chrono::system_clock::now();
 
         ++frames;
         glfwSwapBuffers(Window::ID);
         glfwPollEvents();   
-        auto _poll = std::chrono::system_clock::now();
+        // auto _poll = std::chrono::system_clock::now();
         Iopcs::processInputKey(Window::ID);
         
-        auto end = std::chrono::system_clock::now();
+        // auto end = std::chrono::system_clock::now();
 
         // cout << endl << "Clear: " << chrono::duration<double>(_clear - _st).count() << "\t";
         // cout << "View: " << chrono::duration<double>(_vie - _clear).count() << "\t";
