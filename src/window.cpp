@@ -22,11 +22,13 @@ void Buffer::SetBufferData(unsigned int size_v, std::vector <float> vertices, un
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, size_i, &indices[0], GL_STATIC_DRAW);
 
     // position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+
+    // normal attributes
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(0);
-    // normal attribute
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
+
 
     glBindBuffer(GL_ARRAY_BUFFER, 0); 
 
@@ -34,6 +36,28 @@ void Buffer::SetBufferData(unsigned int size_v, std::vector <float> vertices, un
     // glBindVertexArray(1); 
     glDisableVertexAttribArray(0);
 }
+
+void Buffer::SetBufferData(unsigned int size_v, float vertices[])
+{
+    //Passing vector as a address of first element is needed by GLFW,
+    //Because it was written in ANSI C.
+    glBufferData(GL_ARRAY_BUFFER, size_v, vertices, GL_STATIC_DRAW);
+
+    // position attribute
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+
+    // normal attributes
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0); 
+
+    glBindVertexArray(0); 
+    glDisableVertexAttribArray(0);
+}
+
 unsigned int Buffer::VAO{};
 unsigned int Buffer::VBO{};
 unsigned int Buffer::EBO{};

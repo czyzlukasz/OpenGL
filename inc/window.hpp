@@ -183,6 +183,7 @@ class Buffer
     static unsigned int EBO;
 
     static void SetBufferData(unsigned int, std::vector <float>, unsigned int, std::vector <unsigned int>);
+    static void SetBufferData(unsigned int, float[]);
 
     static void BufferInit()
     {

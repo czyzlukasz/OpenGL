@@ -8,17 +8,56 @@
 #include "glm/gtc/type_ptr.hpp"
 #include "camera.hpp"
 #include "window.hpp"
-#include "map.hpp"
+// #include "map.hpp"
 #include "ioprocess.hpp"
-#include "object.hpp"
+#include "model.hpp"
 
 
 using namespace std;
 
-void processInputKey(GLFWwindow *window);
-void processInputMouse(GLFWwindow* window, double xpos, double ypos);
-void processInputScroll(GLFWwindow* window, double xpos, double ypos); 
-void processInputMouseForwarder(void* context, GLFWwindow* window, double xpos, double ypos);
+float vertices[] = {
+    -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+     0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
+     0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
+     0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
+    -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
+    -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
+
+    -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+     0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+     0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+     0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+    -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+
+    -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+    -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+    -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+    -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+    -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+    -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+
+     0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+     0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+     0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+     0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+     0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+     0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+
+    -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+     0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+     0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+     0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+
+    -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+     0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+     0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+     0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+    -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+    -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
+};
 
 
 int main (void)
@@ -29,10 +68,10 @@ int main (void)
 
     //Source code of vertex and fragment shaders. 
     Shader objShader("src/VertexShader", "src/FragmentShader");
-    Shader lightShader("src/LightShader", "src/FragmentShader");
+    // Shader lightShader("src/LightShader", "src/FragmentShader");
 
     Buffer::BufferInit();
-    Map map(1024);
+    // Map map(512);
 
 
     //Set callback functions for processing mouse inputs.
@@ -43,10 +82,13 @@ int main (void)
     float currentTime = glfwGetTime();
 
     
-    //Send data to GPU.
-    Buffer::SetBufferData(map.Get_v_array_size() * sizeof(float), map.Get_vertices(),
-                          map.Get_i_array_size() * sizeof(unsigned int), map.Get_indices());
-    cout << "Number of triangles: " << map.Get_v_array_size() * sizeof(float) / 3 << "\n";
+    // //Send data to GPU.
+    // Buffer::SetBufferData(map.Get_v_array_size() * sizeof(float), map.Get_vertices(),
+    //                       map.Get_i_array_size() * sizeof(unsigned int), map.Get_indices());
+    // cout << "Number of triangles: " << map.Get_v_array_size() * sizeof(float) / 3 << "\n";
+
+    Buffer::SetBufferData(sizeof(vertices), vertices);
+
 
     glUseProgram(objShader.ID);
     glBindVertexArray(Buffer::VAO);
@@ -58,10 +100,10 @@ int main (void)
     int objColor = glGetUniformLocation(objShader.ID, "objColor");
     int lightColor = glGetUniformLocation(objShader.ID, "lightColor");
     int lightPosition = glGetUniformLocation(objShader.ID, "lightPos");
-    int viewPos = glGetUniformLocation(objShader.ID, "viewPos");
+    // int viewPos = glGetUniformLocation(objShader.ID, "viewPos");
     glUniform3f(objColor, 0.1f, 0.9f, 0.2f);
-    glUniform3f(lightColor, 0.8f, 0.8f, 0.8f);
-    glUniform3f(lightPosition, 5, -10, 5);
+    glUniform3f(lightColor, 1.0f, 1.0f, 1.0f);
+    glUniform3f(lightPosition, 20, -50, 10);
 
     // lightShader.setVec3("lightColor",  1.0f, 1.0f, 1.0f);
 
@@ -95,13 +137,19 @@ int main (void)
         Camera::view = glm::lookAt(Camera::CamPos, Camera::CamPos + Camera::CamDir, Camera::CamUp);        
         glUniformMatrix4fv(glGetUniformLocation(objShader.ID, "view"), 1, GL_FALSE, &Camera::view[0][0]);
 
-        glUniform3f(viewPos, Camera::CamPos[0], Camera::CamPos[1], Camera::CamPos[2]);
+        glUniform3f(lightPosition, 1 * sin(glfwGetTime()), -2 * sin(glfwGetTime()), 3 * cos(glfwGetTime()));
         
         auto _vie = std::chrono::system_clock::now();
-
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, Buffer::EBO);
-        glDrawElements(GL_TRIANGLES, map.Get_i_array_size(), GL_UNSIGNED_INT, 0);
+
+        glUniform3f(objColor, 0.1f, 0.9f, 0.2f);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        // glDrawElements(GL_TRIANGLES, map.Get_i_array_size(), GL_UNSIGNED_INT, 0);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+
+        // glUniform3f(objColor, 0.0f, 0.0f, 0.0f);
+        // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        // glDrawElements(GL_TRIANGLES, map.Get_i_array_size(), GL_UNSIGNED_INT, 0);
 
         
         glClearDepth(1);

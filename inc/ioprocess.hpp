@@ -6,7 +6,7 @@ class Iopcs{
     static void processInputScroll(GLFWwindow* window, double xpos, double ypos){
         Camera::movementSpeed +=ypos/10;
         if(Camera::movementSpeed < 0) Camera::movementSpeed = 0.05;
-        if(Camera::movementSpeed > 2) Camera::movementSpeed = 2;
+        if(Camera::movementSpeed > 4) Camera::movementSpeed = 4;
     }
 
     /*

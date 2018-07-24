@@ -64,10 +64,9 @@ class Map
         PerlinNoise(32, 8);
         PerlinNoise(16, 5);
         //Set and allocate the size of vertices array.
-        v_array_size = map_length * map_length * 3;
+        v_array_size = map_length * map_length * 6;
 
-        for(unsigned int i = 0; i < map_length * map_length; ++i)
-        {
+        for(unsigned int i = 0; i < map_length * map_length; ++i){
             //Local variable for holding XZ coords.
             unsigned int x = i / map_length;
             unsigned int z = i % map_length;
@@ -76,6 +75,7 @@ class Map
             vertices.push_back(x);
             vertices.push_back(terrain[x][z]);
             vertices.push_back(z);
+
         }
 
         //Set and allocate the size of indices array.
