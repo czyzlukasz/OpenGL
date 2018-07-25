@@ -121,10 +121,13 @@ class Model{
         // cout << textures.size() << endl;
         cout << meshes.size() << endl;
     }
-
+    void Init(){
+        for(auto &i : meshes){
+        i.initMesh();
+        }     
+    }
     void Draw(){
         for(auto &i : meshes){
-            i.initMesh();
             i.Draw();
         }
     }

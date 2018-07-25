@@ -117,6 +117,7 @@ int main (void)
     // auto start = chrono::system_clock::now();
 
 
+    mmodel.Init();
     /*
      *  Render loop keeps window refreshing as long
      *  as user decides to close it.
