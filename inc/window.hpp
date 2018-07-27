@@ -96,13 +96,15 @@ class Shader
         {
             char errorlog[250];
             glGetShaderInfoLog(vertexShader, sizeof(errorlog), NULL, errorlog);
+            std::cout << "In " << vertexPath << ":" << std::endl;
             std::cout << "Vertex Shader compilation error!" << std::endl << errorlog << std::endl;
         }
         if(!successFragment) 
         {
             char errorlog[250];
             glGetShaderInfoLog(fragmentShader, sizeof(errorlog), NULL, errorlog);
-            std::cout << "Vertex Shader compilation error!" << std::endl << errorlog << std::endl;
+            std::cout << "In " << fragmentPath << ":" << std::endl;
+            std::cout << "Fragment Shader compilation error!" << std::endl << errorlog << std::endl;
         }
         ID = glCreateProgram();
         glAttachShader(ID, vertexShader);
@@ -127,8 +129,8 @@ class Shader
 class Window
 {
     public:
-    GLFWwindow *ID;
-    Window()
+    static GLFWwindow *ID;
+    static void WindowInit()
     {
         glfwInit(); 
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -174,15 +176,16 @@ class Buffer
     public:
 
     //VAO - vertex array object.
-    unsigned int VAO;
+    static unsigned int VAO;
     //VBO - vertex buffer object.
-    unsigned int VBO;
+    static unsigned int VBO;
     //EBO - element buffer object.
-    unsigned int EBO;
+    static unsigned int EBO;
 
-    void SetBufferData(unsigned int, std::vector <float>, unsigned int, std::vector <unsigned int>);
+    static void SetBufferData(unsigned int, std::vector <float>, unsigned int, std::vector <unsigned int>);
+    static void SetBufferData(unsigned int, float[]);
 
-    Buffer()
+    static void BufferInit()
     {
         //Generate buffers.
         glGenVertexArrays(1, &VAO);

@@ -7,8 +7,8 @@ TARGET := bin/OpenGL
 SRCEXT := cpp
 SOURCES := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
 OBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.o))
-CFLAGS := -g -Wall -pedantic -std=c++11 
-OGLFLAGS := -lglfw -ldl
+CFLAGS := -g -Wall -pedantic -std=c++11
+OGLFLAGS := -lglfw -ldl -lassimp
 INC := -I inc 
 
 all: clean $(TARGET)
