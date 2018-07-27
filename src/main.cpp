@@ -8,7 +8,6 @@
 #include "glm/gtc/type_ptr.hpp"
 #include "camera.hpp"
 #include "window.hpp"
-// #include "map.hpp"
 #include "ioprocess.hpp"
 #include "model.hpp"
 
@@ -103,7 +102,7 @@ int main (void)
     int lightPosition = glGetUniformLocation(objShader.ID, "lightPos");
     // int viewPos = glGetUniformLocation(objShader.ID, "viewPos");
     glUniform3f(objColor, 0.1f, 0.9f, 0.2f);
-    glUniform3f(lightColor, 1.0f, 1.0f, 1.0f);
+    glUniform3f(lightColor, 0.5f, 0.5f, 0.5f);
     glUniform3f(lightPosition, 20, -50, 10);
 
     // lightShader.setVec3("lightColor",  1.0f, 1.0f, 1.0f);
@@ -136,7 +135,7 @@ int main (void)
         
 
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-        mmodel.Draw();
+        mmodel.Draw(objShader.ID);
 
         
         glClearDepth(1);
