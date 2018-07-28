@@ -163,7 +163,7 @@ class Window
         glEnable(GL_DEPTH_TEST);
 
         //Set drawing style to just lines.
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
         //Set cursor properties.
         glfwSetInputMode(ID, GLFW_CURSOR, GLFW_CURSOR_DISABLED);  

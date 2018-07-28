@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstring>
 #include <cmath>
+#include <memory>
 #include <cstdlib>
 #include <chrono>
 #include "glm/glm.hpp"
@@ -9,54 +10,9 @@
 #include "camera.hpp"
 #include "window.hpp"
 #include "ioprocess.hpp"
-#include "model.hpp"
-
+#include "object.hpp"
 
 using namespace std;
-
-// float vertices[] = {
-//     -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-//      0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
-//      0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
-//      0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
-//     -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
-//     -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
-
-//     -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-//      0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-//      0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-//      0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-//     -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-//     -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-
-//     -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-//     -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-//     -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-//     -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-//     -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-//     -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-
-//      0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-//      0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-//      0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-//      0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-//      0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-//      0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-
-//     -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-//      0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-//      0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-//      0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-//     -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-//     -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-
-//     -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-//      0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-//      0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-//      0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-//     -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-//     -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
-// };
 
 
 int main (void)
@@ -67,10 +23,6 @@ int main (void)
 
     //Source code of vertex and fragment shaders. 
     Shader objShader("src/VertexShader", "src/FragmentShader");
-    // Shader lightShader("src/LightShader", "src/FragmentShader");
-
-    // Buffer::BufferInit();
-    // Map map(512);
 
 
     //Set callback functions for processing mouse inputs.
@@ -80,32 +32,35 @@ int main (void)
     int frames = 0;
     float currentTime = glfwGetTime();
 
-    
-    // //Send data to GPU.
-    // Buffer::SetBufferData(map.Get_v_array_size() * sizeof(float), map.Get_vertices(),
-    //                       map.Get_i_array_size() * sizeof(unsigned int), map.Get_indices());
-    // cout << "Number of triangles: " << map.Get_v_array_size() * sizeof(float) / 3 << "\n";
+    //  Load new model.
+    shared_ptr<Model> t_rex_mod = make_shared <Model>("models/source/TrexModelByJoel3d/TrexByJoel3d.fbx");
 
-    // Buffer::SetBufferData(sizeof(vertices), vertices);
-    Model mmodel("models/source/TrexModelByJoel3d/TrexByJoel3d.fbx");
+    //  Set up new objects.
+    // Object t_rex(t_rex_mod);
 
+
+    //  Initialise model.
+    t_rex_mod->Init();
+
+    vector<Object> t_rexes;
+    int siz = 20;
+    while(--siz){
+        t_rexes.push_back(Object(t_rex_mod));
+    }
 
     glUseProgram(objShader.ID);
-    // glBindVertexArray(Buffer::VAO);
+    
     Camera::SetProjection((float)(WINDOW_SIZE_X / WINDOW_SIZE_Y));
 
 
     glm::mat4 model;
     
-    int objColor = glGetUniformLocation(objShader.ID, "objColor");
+    //  Get light uniforms.
     int lightColor = glGetUniformLocation(objShader.ID, "lightColor");
     int lightPosition = glGetUniformLocation(objShader.ID, "lightPos");
-    // int viewPos = glGetUniformLocation(objShader.ID, "viewPos");
-    glUniform3f(objColor, 0.1f, 0.9f, 0.2f);
-    glUniform3f(lightColor, 0.5f, 0.5f, 0.5f);
+    glUniform3f(lightColor, 1.0f, 1.0f, 1.0f);
     glUniform3f(lightPosition, 20, -50, 10);
 
-    // lightShader.setVec3("lightColor",  1.0f, 1.0f, 1.0f);
 
     Camera::view = glm::translate(Camera::view, glm::vec3(0.0f, 0.0f, -3.0f));
 
@@ -113,10 +68,16 @@ int main (void)
     glUniformMatrix4fv(glGetUniformLocation(objShader.ID, "model"), 1, GL_FALSE, &model[0][0]); 
     glUniformMatrix4fv(glGetUniformLocation(objShader.ID, "view"), 1, GL_FALSE, &Camera::view[0][0]);
 
-    // auto start = chrono::system_clock::now();
 
+    //Init model.
+    // t_rex_mod->Init();
+    // for(auto &i : t_rexes){
+    //     i.model->Init();
+    // }
 
-    mmodel.Init();
+    for(auto &i : t_rexes){
+        i.MoveAbs( glm::vec3( rand()%100 - 50, 0, rand()%100 - 50 ) );
+    }
     /*
      *  Render loop keeps window refreshing as long
      *  as user decides to close it.
@@ -127,15 +88,24 @@ int main (void)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
 
+
+        //  Calculate the view matrix based on camera view.
         Camera::view = glm::lookAt(Camera::CamPos, Camera::CamPos + Camera::CamDir, Camera::CamUp);        
         glUniformMatrix4fv(glGetUniformLocation(objShader.ID, "view"), 1, GL_FALSE, &Camera::view[0][0]);
 
+        // Set the light position.
+        glm::vec3 lp = glm::vec3(30 * sin(2 * glfwGetTime()), 0, 30 * cos(2 * glfwGetTime()));
+        glUniform3fv(lightPosition, 1, &lp[0]);      
 
-        glUniform3f(lightPosition, 10 * sin(glfwGetTime()), 0, 30 * cos(glfwGetTime()));
-        
 
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-        mmodel.Draw(objShader.ID);
+        // t_rex.MoveAbs(glm::vec3(4 * sin( glfwGetTime() ), 0, 0));
+
+        //Draw model.
+        // t_rex.Draw(objShader.ID);
+        for(auto &i : t_rexes){
+            i.Draw(objShader.ID);
+        }
+
 
         
         glClearDepth(1);

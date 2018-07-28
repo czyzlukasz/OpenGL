@@ -15,7 +15,11 @@ void main()
     vec3  lightDir = (lightPos - FragPos);
     vec3 normLightDir = normalize(lightDir);
     vec3 normNormal = normalize(Normal);
+
+    //0.1 is minimal lightning of object.
     float angl = max( dot(normNormal, normLightDir), 0.1 );
+    //Pseudo specular lightning.
+    //    angl = angl * angl;
     vec3 diffuse = angl * lightColor;
     FragColor = texture(texture_diffuse1, TextureCoord) * vec4(diffuse, 1.0);
 } 
