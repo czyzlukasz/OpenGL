@@ -16,7 +16,7 @@
  */
 
 
-void Mesh::Draw(unsigned int ID, glm::vec3 &pos){
+void Mesh::Draw(unsigned int ID, glm::vec3 pos){
     for(unsigned int i = 0; i < textures.size(); i++)
     {
         glActiveTexture(GL_TEXTURE0 + i); // Activate proper texture unit before binding.
@@ -35,7 +35,6 @@ void Mesh::Draw(unsigned int ID, glm::vec3 &pos){
     glBindVertexArray(0);
     glActiveTexture(GL_TEXTURE0);
 }
-
 
 
 
@@ -140,11 +139,11 @@ vector<Texture> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType type,
             if(std::strcmp(loaded_textures[j].path.data(), str.C_Str()) == 0)
             {
                 textures.push_back(loaded_textures[j]);
-                skip = true; // a texture with the same filepath has already been loaded, continue to next one. (optimization)
+                skip = true; // a texture with the same filepath has already been loaded, continue to next one.
                 break;
             }
         }
-        if(!skip)
+        if(!skip && str.length)
         {   // if texture hasn't been loaded already, load it
             Texture texture;
             texture.ID = TextureFromFile(str.C_Str(), directory, false);
@@ -152,9 +151,24 @@ vector<Texture> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType type,
             texture.path = str.C_Str();
             textures.push_back(texture);
             loaded_textures.push_back(texture);  // store it as texture loaded for entire model, to ensure we won't unnecesery load duplicate textures.
+            cout << texture.ID << " " << texture.path << endl;
         }
+
     }
     return textures;
+}
+
+
+Texture Model::loadMaterialTextures(const char *path, const string &directory, bool gamma){
+    Texture texture;
+    texture.ID = TextureFromFile(path, directory, gamma);
+    texture.path = path;
+    texture.type = "texture_diffuse";
+
+    cout << texture.ID << " " << texture.path << endl;
+    // cout << texture.type << endl;
+
+    return texture;
 }
 
 unsigned int Model::TextureFromFile(const char *path, const string &directory, bool gamma){
@@ -190,6 +204,7 @@ unsigned int Model::TextureFromFile(const char *path, const string &directory, b
     else
     {
         std::cout << "Texture failed to load at path: " << path << std::endl;
+        std::cout << "Filename: " << filename << std::endl;
         stbi_image_free(data);
     }
 

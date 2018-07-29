@@ -24,7 +24,8 @@ int main (void)
 
     //Source code of vertex and fragment shaders. 
     Shader objShader("src/VertexShader", "src/FragmentShader");
-    Map map(512);
+    Shader terrainShader("src/VertexShader", "src/FragmentShader");
+    Map _map(512);
 
     //Set callback functions for processing mouse inputs.
     glfwSetCursorPosCallback(Window::ID, Iopcs::processInputMouse);
@@ -34,17 +35,19 @@ int main (void)
     float currentTime = glfwGetTime();
 
     //  Load new model.
+    shared_ptr<Model> map_mod = make_shared <Model>(_map.TerrainToMesh(), "models/textures/grass-texture.png");
     shared_ptr<Model> t_rex_mod = make_shared <Model>("models/source/TrexModelByJoel3d/TrexByJoel3d.fbx");
-
     //  Set up new objects.
     // Object t_rex(t_rex_mod);
 
 
     //  Initialise model.
+    map_mod->Init();
     t_rex_mod->Init();
-    map.mesh->initMesh();
+    // map.mesh->initMesh();
 
     vector<Object> t_rexes;
+    Object map(map_mod);
     int siz = 5;
     while(--siz){
         t_rexes.push_back(Object(t_rex_mod));
@@ -96,7 +99,7 @@ int main (void)
         glUniformMatrix4fv(glGetUniformLocation(objShader.ID, "view"), 1, GL_FALSE, &Camera::view[0][0]);
 
         // Set the light position.
-        glm::vec3 lp = glm::vec3(300 * sin(0.5 * glfwGetTime()), 50, 300 * cos(0.5 * glfwGetTime()));
+        glm::vec3 lp = glm::vec3(300 * sin(0.5 * glfwGetTime()), 100, 300 * cos(0.5 * glfwGetTime()));
         glUniform3fv(lightPosition, 1, &lp[0]);      
         t_rexes[0].MoveAbs(lp);
 
@@ -107,8 +110,8 @@ int main (void)
         for(auto &i : t_rexes){
             i.Draw(objShader.ID);
         }
-        glm::vec3 p = glm::vec3(-256, -25, -256);
-        map.mesh->Draw(objShader.ID, p);
+        // glm::vec3 p = glm::vec3(-256, -25, -256);
+        map.Draw(objShader.ID);
 
         
         glClearDepth(1);

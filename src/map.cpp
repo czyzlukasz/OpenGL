@@ -12,7 +12,7 @@ void Map::PerlinNoise(unsigned int grid_size, unsigned int amplitude)
         {
             for(unsigned int j = 0; j < grid_amount; ++j)
             {
-                GradGrid[i][j] = glm::vec2((rand() % 10) / 10.0f - 0.5f, (rand() % 10) / 10.0f - 0.5f);
+                GradGrid[i][j] = glm::vec2((rand() % 1000) / 1000.0f - 0.5f, (rand() % 1000) / 1000.0f - 0.5f);
             }
         }
         
@@ -63,7 +63,7 @@ void Map::PerlinNoise(unsigned int grid_size, unsigned int amplitude)
                 float Interp_Final = CosInterpolate(Interp_AB, Interp_CD, float(z % grid_size) / grid_size);
                 // cout << "X: " << x << " Z: " << z << " Final value: " << Interp_Final << "\n";
                 // cout << Interp_Final << "\n";
-                terrain[x][z] += Interp_Final * amplitude;
+                terrain[x][z] += (Interp_Final * amplitude);
             }
         }
         delete []GradGrid;
@@ -91,7 +91,7 @@ Mesh Map::TerrainToMesh(void){
         for(uint j = 0; j < map_length; ++j){
             Vertex temp;
             temp.Position = glm::vec3(i, terrain[i][j], j);
-            temp.TextureCoords = glm::vec3(0, 0, 0);
+            temp.TextureCoords = glm::vec2(i % 2, j % 2);
             vertices.push_back(temp);
         }
     }
@@ -139,7 +139,7 @@ Mesh Map::TerrainToMesh(void){
                 E = glm::vec3(1, 0, 0);
             }
 
-            vertices[curr_idx].Normal = glm::cross(N, E);
+            vertices[curr_idx].Normal = glm::normalize( glm::cross(N, E) );
             // cout << vertices[curr_idx].Normal.x << " " <<
             //         vertices[curr_idx].Normal.y << " " <<
             //         vertices[curr_idx].Normal.z << endl;

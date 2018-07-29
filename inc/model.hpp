@@ -97,7 +97,7 @@ class Mesh{
     }
 
 
-    void Draw(unsigned int ID, glm::vec3 &position);
+    void Draw(unsigned int ID, glm::vec3 pos = glm::vec3(0, 0, 0));
 };
 
 
@@ -124,7 +124,16 @@ class Model{
         // cout << vertices.size() << endl;
         // cout << indices.size() << endl;
         // cout << textures.size() << endl;
-        // cout << meshes.size() << endl;
+        cout << meshes.size() << endl;
+        cout << loaded_textures.size() << endl;
+    }
+
+    Model(Mesh m, string d){
+        meshes.push_back(m);
+        path = d;
+        filename = path.substr(path.find_last_of('/') + 1);
+        directory = path.substr(0, path.find_last_of('/'));
+        loaded_textures.push_back( loadMaterialTextures(filename.c_str(), directory.c_str(), false) );
     }
 
     void Init(){
@@ -139,6 +148,12 @@ class Model{
         }
     }
 
+    void Draw(unsigned int ID){
+        for(auto &i : meshes){
+            i.Draw(ID);
+        }
+    }
+
 
     //  Method for loading models from file
     void LoadModel(void);
@@ -148,6 +163,8 @@ class Model{
     Mesh processMesh(aiMesh *mesh, const aiScene *scene);
 
     vector<Texture> loadMaterialTextures(aiMaterial *mat, aiTextureType type, string typeName);
+
+    Texture loadMaterialTextures(const char *path, const string &directory, bool gamma);
 
     unsigned int TextureFromFile(const char *path, const string &directory, bool gamma);
 };

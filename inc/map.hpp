@@ -15,11 +15,11 @@
 using namespace std;
 
 class Map{
-    unsigned int map_length;
 
     public:
     vector <vector <float>> terrain;
     unique_ptr<Mesh> mesh;
+    unsigned int map_length;
 
     Map(unsigned int size){
         map_length = size;
@@ -29,13 +29,16 @@ class Map{
             i.resize(map_length);
         }
 
-        PerlinNoise(512, 350);
-        PerlinNoise(256, 110);
-        PerlinNoise(128, 30);
-        PerlinNoise(64, 10);
-        PerlinNoise(32, 3);
-        PerlinNoise(16, 1);
-        mesh = make_unique<Mesh>( TerrainToMesh() );
+        for(int i = map_length; i > 0; i /= 2){
+            PerlinNoise( i, pow(i, 2) / (2 * map_length) );
+        }
+        // PerlinNoise(512, 128);
+        // PerlinNoise(256, 64);
+        // PerlinNoise(128, 32);
+        // PerlinNoise(64, 16);
+        // PerlinNoise(32, 2);
+        // // PerlinNoise(16, 1);
+        // mesh = make_unique<Mesh>( TerrainToMesh() );
     }
 
 

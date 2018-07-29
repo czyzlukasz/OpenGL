@@ -16,8 +16,8 @@ void main()
     vec3 normLightDir = normalize(lightDir);
     vec3 normNormal = normalize(Normal);
 
-    //0.1 is minimal lightning of object.
-    float angl = max( dot(normNormal, normLightDir), 0.1 );
+    //0.05 is minimal lightning of object.
+    float angl = max( dot(normNormal, normLightDir), 0.05 );
     //Pseudo specular lightning.
     //    angl = angl * angl;
     vec3 diffuse = angl * lightColor;
