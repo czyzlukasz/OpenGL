@@ -7,7 +7,7 @@ TARGET := bin/OpenGL
 SRCEXT := cpp
 SOURCES := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
 OBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.o))
-CFLAGS := -g -Wall -pedantic -std=c++11
+CFLAGS := -g -Wall -pedantic -std=c++14
 OGLFLAGS := -lglfw -ldl -lassimp
 INC := -I inc 
 
@@ -16,7 +16,7 @@ all: clean $(TARGET)
 $(TARGET): $(OBJECTS)
 	@echo " Linking..."
 	@echo " $(CC) $^ -o $(TARGET) $(OGLFLAGS)"; $(CC) $^ -o $(TARGET) $(OGLFLAGS) 
-	./bin/OpenGL
+	-./bin/OpenGL
 
 $(BUILDDIR)/%.o: $(SRCDIR)/%.$(SRCEXT)
 	@echo " Building..."

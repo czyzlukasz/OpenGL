@@ -35,6 +35,7 @@
         "fstream": "cpp",
         "chrono": "cpp",
         "ratio": "cpp",
-        "vector": "cpp"
+        "vector": "cpp",
+        "memory": "cpp"
     }
 }

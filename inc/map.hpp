@@ -4,15 +4,50 @@
 #include <iostream>
 #include <cstdlib>
 #include <vector>
+#include <memory>
 
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
 #include "glm/vec2.hpp"
+#include "object.hpp"
 
 using namespace std;
 
+class Map{
+    unsigned int map_length;
 
+    public:
+    vector <vector <float>> terrain;
+    unique_ptr<Mesh> mesh;
+
+    Map(unsigned int size){
+        map_length = size;
+        terrain.resize(map_length);
+
+        for(auto &i : terrain){
+            i.resize(map_length);
+        }
+
+        PerlinNoise(512, 350);
+        PerlinNoise(256, 110);
+        PerlinNoise(128, 30);
+        PerlinNoise(64, 10);
+        PerlinNoise(32, 3);
+        PerlinNoise(16, 1);
+        mesh = make_unique<Mesh>( TerrainToMesh() );
+    }
+
+
+    //  Methods.
+    void PerlinNoise(unsigned int grid_size, unsigned int amplitude);
+    float CosInterpolate (float A, float B, float alpha);
+    float Interpolate (float A, float B, float alpha);
+    Mesh TerrainToMesh(void);
+};
+
+/*  Old class.
+ *
 class Map
 {    
     private:
@@ -97,5 +132,5 @@ class Map
         }
     }
 };
-
+*/
 #endif

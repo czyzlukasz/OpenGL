@@ -13,7 +13,6 @@ void Map::PerlinNoise(unsigned int grid_size, unsigned int amplitude)
             for(unsigned int j = 0; j < grid_amount; ++j)
             {
                 GradGrid[i][j] = glm::vec2((rand() % 10) / 10.0f - 0.5f, (rand() % 10) / 10.0f - 0.5f);
-                // cout << i << " " << j << "Grid\n";
             }
         }
         
@@ -73,8 +72,6 @@ void Map::PerlinNoise(unsigned int grid_size, unsigned int amplitude)
 
 float Map::Interpolate (float A, float B, float alpha)
 {
-    // return ((B - A) / grid_size) * alpha + A;
-    // cout << alpha << "ALPHA\n";
     return(A * (1 - alpha) + B * alpha);
 }
 
@@ -83,21 +80,89 @@ float Map::CosInterpolate (float A, float B, float alpha)
     return Interpolate(A, B, (-cos(alpha * M_PI)/2 + 0.5f));
 }
 
-unsigned int Map::Get_v_array_size(void)
-{
-    return v_array_size;
-}
+Mesh Map::TerrainToMesh(void){
+    vector <Vertex> vertices;
+    vector <unsigned int> indices;
+    vector <Texture> textures;
 
-unsigned int Map::Get_i_array_size(void)
-{
-    return i_array_size;
-}
 
-vector <float> Map::Get_vertices(void)
-{
-    return vertices;
-}
-vector <unsigned int> Map::Get_indices(void)
-{
-    return indices;
+    //  Put all Position and Texture coordinates to vertices vector.
+    for(uint i = 0; i < map_length; ++i){
+        for(uint j = 0; j < map_length; ++j){
+            Vertex temp;
+            temp.Position = glm::vec3(i, terrain[i][j], j);
+            temp.TextureCoords = glm::vec3(0, 0, 0);
+            vertices.push_back(temp);
+        }
+    }
+
+    //  Calculate normals.
+    for(uint x = 0; x < map_length; ++x){
+        for(uint z = 0; z < map_length; ++z){
+            //  Obtain (if possible) two cardinal points around terrain[x][z].
+            glm::vec3 N, E, S, W;
+
+            //  N
+            int idx = x * map_length + z + 1;
+            if(idx < vertices.size())   N = vertices[idx].Position;
+
+            //  E
+            idx = x * map_length + z + map_length;
+            if(idx < vertices.size())   E = vertices[idx].Position;
+
+            // //  S
+            // idx = x * map_length + z - 1;
+            // if(idx < vertices.size())   S = vertices[idx].Position;
+
+            // //  W
+            // idx = x * map_length + z - map_length;
+            // if(idx < vertices.size())   W = vertices[idx].Position;
+
+            // cout << x << " " << z << "\t\t" << E.x << " " << E.y << " " << E.z << endl;
+            // cout << x << " " << z << "\t\t" << W.x << " " << W.y << " " << W.z << endl << endl;
+
+            //  Calculate vectors from [x][z] to N and [x][z] to E.
+            uint curr_idx = x * map_length + z;
+            //  N
+            if( N != glm::vec3(0, 0, 0) ){
+                N -= vertices[curr_idx].Position;
+            }
+            else{
+                N = glm::vec3(0, 0, 1);
+            }
+
+            //  E
+            if( E != glm::vec3(0, 0, 0) ){
+                E -= vertices[curr_idx].Position;
+            }
+            else{
+                E = glm::vec3(1, 0, 0);
+            }
+
+            vertices[curr_idx].Normal = glm::cross(N, E);
+            // cout << vertices[curr_idx].Normal.x << " " <<
+            //         vertices[curr_idx].Normal.y << " " <<
+            //         vertices[curr_idx].Normal.z << endl;
+        }
+    }
+
+    //Set and allocate the size of indices array.
+    uint i_array_size = (map_length - 1) * (map_length - 1) * 6;
+    
+    unsigned int indices_size = map_length - 1; 
+
+    for(unsigned int i = 0; i < i_array_size; i += 6)
+    {
+        unsigned int k = i / 6;
+
+        indices.push_back( (k % indices_size) + (k / indices_size) * map_length );
+        indices.push_back( (k % indices_size) + (k / indices_size) * map_length + 1 );
+        indices.push_back( indices[i] + map_length );
+
+        indices.push_back( indices[i + 2] );
+        indices.push_back( indices[i + 2] + 1 );
+        indices.push_back( indices[i + 1] );
+    }
+    // for(auto &i : indices) cout << i << endl;
+    return Mesh(vertices, indices, textures);
 }

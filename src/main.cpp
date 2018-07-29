@@ -11,6 +11,7 @@
 #include "window.hpp"
 #include "ioprocess.hpp"
 #include "object.hpp"
+#include "map.hpp"
 
 using namespace std;
 
@@ -23,7 +24,7 @@ int main (void)
 
     //Source code of vertex and fragment shaders. 
     Shader objShader("src/VertexShader", "src/FragmentShader");
-
+    Map map(512);
 
     //Set callback functions for processing mouse inputs.
     glfwSetCursorPosCallback(Window::ID, Iopcs::processInputMouse);
@@ -41,9 +42,10 @@ int main (void)
 
     //  Initialise model.
     t_rex_mod->Init();
+    map.mesh->initMesh();
 
     vector<Object> t_rexes;
-    int siz = 20;
+    int siz = 5;
     while(--siz){
         t_rexes.push_back(Object(t_rex_mod));
     }
@@ -94,9 +96,9 @@ int main (void)
         glUniformMatrix4fv(glGetUniformLocation(objShader.ID, "view"), 1, GL_FALSE, &Camera::view[0][0]);
 
         // Set the light position.
-        glm::vec3 lp = glm::vec3(30 * sin(2 * glfwGetTime()), 0, 30 * cos(2 * glfwGetTime()));
+        glm::vec3 lp = glm::vec3(300 * sin(0.5 * glfwGetTime()), 50, 300 * cos(0.5 * glfwGetTime()));
         glUniform3fv(lightPosition, 1, &lp[0]);      
-
+        t_rexes[0].MoveAbs(lp);
 
         // t_rex.MoveAbs(glm::vec3(4 * sin( glfwGetTime() ), 0, 0));
 
@@ -105,7 +107,8 @@ int main (void)
         for(auto &i : t_rexes){
             i.Draw(objShader.ID);
         }
-
+        glm::vec3 p = glm::vec3(-256, -25, -256);
+        map.mesh->Draw(objShader.ID, p);
 
         
         glClearDepth(1);
