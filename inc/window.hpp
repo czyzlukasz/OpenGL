@@ -168,6 +168,9 @@ class Window
         //Set cursor properties.
         glfwSetInputMode(ID, GLFW_CURSOR, GLFW_CURSOR_DISABLED);  
 
+        //Enable texturing.
+        glEnable(GL_TEXTURE_2D);
+
     }
 };
 

@@ -34,25 +34,25 @@ int main (void)
     int frames = 0;
     float currentTime = glfwGetTime();
 
-    //  Load new model.
-    shared_ptr<Model> map_mod = make_shared <Model>(_map.TerrainToMesh(), "models/textures/grass-texture.png");
+    //  Load new models.
     shared_ptr<Model> t_rex_mod = make_shared <Model>("models/source/TrexModelByJoel3d/TrexByJoel3d.fbx");
+    shared_ptr<Model> map_mod = make_shared <Model>(_map.TerrainToMesh(), "models/textures/grass-texture.png");
+    shared_ptr<Model> sun_mod = make_shared <Model>("models/source/TrexModelByJoel3d/TrexByJoel3d.fbx");
     //  Set up new objects.
     // Object t_rex(t_rex_mod);
 
 
-    //  Initialise model.
+
+    //  Initialise models.
     map_mod->Init();
     t_rex_mod->Init();
-    // map.mesh->initMesh();
+    sun_mod->Init();
 
     vector<Object> t_rexes;
     Object map(map_mod);
-    int siz = 5;
-    while(--siz){
-        t_rexes.push_back(Object(t_rex_mod));
-    }
-
+    Object t_rex(t_rex_mod);
+    Object sun(sun_mod);
+    
     glUseProgram(objShader.ID);
     
     Camera::SetProjection((float)(WINDOW_SIZE_X / WINDOW_SIZE_Y));
@@ -73,16 +73,8 @@ int main (void)
     glUniformMatrix4fv(glGetUniformLocation(objShader.ID, "model"), 1, GL_FALSE, &model[0][0]); 
     glUniformMatrix4fv(glGetUniformLocation(objShader.ID, "view"), 1, GL_FALSE, &Camera::view[0][0]);
 
+    map.MoveObj( glm::vec3( -256, -50, -256 ) );
 
-    //Init model.
-    // t_rex_mod->Init();
-    // for(auto &i : t_rexes){
-    //     i.model->Init();
-    // }
-
-    for(auto &i : t_rexes){
-        i.MoveAbs( glm::vec3( rand()%100 - 50, 0, rand()%100 - 50 ) );
-    }
     /*
      *  Render loop keeps window refreshing as long
      *  as user decides to close it.
@@ -101,18 +93,16 @@ int main (void)
         // Set the light position.
         glm::vec3 lp = glm::vec3(300 * sin(0.5 * glfwGetTime()), 100, 300 * cos(0.5 * glfwGetTime()));
         glUniform3fv(lightPosition, 1, &lp[0]);      
-        t_rexes[0].MoveAbs(lp);
+        sun.MoveAbs(lp);
 
         // t_rex.MoveAbs(glm::vec3(4 * sin( glfwGetTime() ), 0, 0));
 
         //Draw model.
         // t_rex.Draw(objShader.ID);
-        for(auto &i : t_rexes){
-            i.Draw(objShader.ID);
-        }
         // glm::vec3 p = glm::vec3(-256, -25, -256);
         map.Draw(objShader.ID);
-
+        t_rex.Draw(objShader.ID);
+        sun.Draw(objShader.ID);
         
         glClearDepth(1);
         ++frames;
@@ -120,6 +110,7 @@ int main (void)
         glfwPollEvents();   
         Iopcs::processInputKey(Window::ID);
     }
+
 
 
     cout << "Avg FPS: " << (float)frames /(glfwGetTime() - currentTime) << endl;
