@@ -4,14 +4,15 @@
 #include "model.hpp"
 
 class PhysicalProp{
-    protected:
-    float mass;
+    public:
+    float mass{};
+    float bounciness = 0.25;
     glm::vec3 velocity{};
     glm::vec3 position{}, rotation{};
 };
 
 
-class Object : protected PhysicalProp{
+class Object : public PhysicalProp{
 
     public:
     std::shared_ptr<Model> model;

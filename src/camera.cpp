@@ -20,7 +20,7 @@ void Camera::SetLastXY(float x, float y)
 float Camera::sensitivity = 0.05f;
 float Camera::movementSpeed = 0.25f;
 glm::vec3 Camera::CamUp = glm::vec3(0.0f, 1.0f, 0.0f);
-glm::vec3 Camera::CamPos = glm::vec3(10.0f, 10.0f, 10.0f);
+glm::vec3 Camera::CamPos = glm::vec3(-10.0f, 10.0f, -10.0f);
 glm::vec3 Camera::CamTarget = glm::vec3(-1.0f, 0.0f, 1.0f);
 glm::vec3 Camera::CamDir = glm::vec3(0.0f, 0.0f, 0.0f);
 glm::mat4 Camera::view{};// = glm::mat4();

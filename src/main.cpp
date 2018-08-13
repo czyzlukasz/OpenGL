@@ -53,6 +53,7 @@ int main (void)
     //  Create objects using loaded models.
     Object map(map_mod);
     Object t_rex(t_rex_mod);
+    // t_rex.bounciness = 0.6;
     Object sun(sun_mod);
     
     glUseProgram(objShader.ID);
@@ -78,6 +79,7 @@ int main (void)
     glUniformMatrix4fv(glGetUniformLocation(objShader.ID, "view"), 1, GL_FALSE, &Camera::view[0][0]);
 
     // map.MoveObj( glm::vec3( -256, -50, -256 ) );
+    t_rex.MoveAbs( glm::vec3(100, 50, 100) );
 
     /*
      *  Render loop keeps window refreshing as long
@@ -109,8 +111,13 @@ int main (void)
         t_rex.Draw(objShader.ID);
         sun.Draw(objShader.ID);
 
-        //Check collision.
+        //Check camera collision.
         if( Phy::CheckCollision_VectorWithTerrain(Camera::CamPos, 1.5, map) ) cout << "Collision detected" << endl;
+
+        Phy::ApplyVelocity_FromGravity(t_rex, 0.016);
+        Phy::MoveObject(t_rex, 0.016);
+        Phy::CheckCollision_VectorWithTerrain(t_rex, 1, map);
+
         
         glClearDepth(1);
         ++frames;
