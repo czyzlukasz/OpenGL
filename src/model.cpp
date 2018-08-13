@@ -19,7 +19,7 @@
 void Mesh::Draw(unsigned int shaderID, glm::vec3 pos){
     for(unsigned int i = 0; i < textures.size(); ++i)
     {
-        cout << textures[i].ID << " " << textures[i].path << endl;
+        // cout << textures[i].ID << " " << textures[i].path << endl;
         glActiveTexture(GL_TEXTURE0 + i); // Activate proper texture unit before binding.
         if(textures[i].type == "texture_diffuse")
         glUniform1i(glGetUniformLocation(shaderID, "texture_diffuse1"), i);
@@ -27,7 +27,7 @@ void Mesh::Draw(unsigned int shaderID, glm::vec3 pos){
         glUniform1i(glGetUniformLocation(shaderID, "texture_specular1"), i);
         glBindTexture(GL_TEXTURE_2D, textures[i].ID);
     }
-    cout << endl;
+    // cout << endl;
     int position_u = glGetUniformLocation(shaderID, "position");
     glUniform3fv(position_u, 1, &pos[0]);
 
@@ -153,7 +153,7 @@ vector<Texture> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType type,
             texture.path = str.C_Str();
             textures.push_back(texture);
             loaded_textures.push_back(texture);  // store it as texture loaded for entire model, to ensure we won't unnecesery load duplicate textures.
-            cout << texture.ID << " " << texture.path << endl;
+            // cout << texture.ID << " " << texture.path << endl;
         }
 
     }
@@ -167,7 +167,7 @@ Texture Model::loadMaterialTextures(const char *path, const string &directory, b
     texture.path = path;
     texture.type = "texture_diffuse";
 
-    cout << texture.ID << " " << texture.path << endl;
+    // cout << texture.ID << " " << texture.path << endl;
     // cout << texture.type << endl;
     loaded_textures.push_back(texture);
     return texture;

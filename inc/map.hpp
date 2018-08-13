@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <vector>
 #include <memory>
+#include <thread>
 
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
@@ -29,23 +30,23 @@ class Map{
             i.resize(map_length);
         }
 
+        //  Create thread vector to run Perlin Noise algorithm on
+        //  all threads.
+        vector <thread> t;
+
         for(int i = map_length; i > 0; i /= 2){
-            PerlinNoise( i, pow(i, 2) / (2 * map_length) );
+            t.push_back( thread(Map::PerlinNoise, i, pow(i, 2) / (2 * map_length), this) );
+            // PerlinNoise( i, pow(i, 2) / (2 * map_length) );
         }
-        // PerlinNoise(512, 128);
-        // PerlinNoise(256, 64);
-        // PerlinNoise(128, 32);
-        // PerlinNoise(64, 16);
-        // PerlinNoise(32, 2);
-        // // PerlinNoise(16, 1);
-        // mesh = make_unique<Mesh>( TerrainToMesh() );
+
+        for(auto &i : t) i.join();
     }
 
 
     //  Methods.
-    void PerlinNoise(unsigned int grid_size, unsigned int amplitude);
-    float CosInterpolate (float A, float B, float alpha);
-    float Interpolate (float A, float B, float alpha);
+    static void PerlinNoise(unsigned int grid_size, unsigned int amplitude, Map *m);
+    static float CosInterpolate (float A, float B, float alpha);
+    static float Interpolate (float A, float B, float alpha);
     Mesh TerrainToMesh(void);
 };
 

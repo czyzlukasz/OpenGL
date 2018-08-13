@@ -8,7 +8,7 @@ SRCEXT := cpp
 SOURCES := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
 OBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.o))
 CFLAGS := -g -Wall -pedantic -std=c++14
-OGLFLAGS := -lglfw -ldl -lassimp
+OGLFLAGS := -lglfw -ldl -lassimp -pthread
 INC := -I inc 
 
 all: clean $(TARGET)

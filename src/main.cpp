@@ -10,7 +10,7 @@
 #include "camera.hpp"
 #include "window.hpp"
 #include "ioprocess.hpp"
-#include "object.hpp"
+#include "physics.hpp"
 #include "map.hpp"
 
 using namespace std;
@@ -25,7 +25,7 @@ int main (void)
     //Source code of vertex and fragment shaders. 
     Shader objShader("src/VertexShader", "src/FragmentShader");
     Shader terrainShader("src/VertexShader", "src/FragmentShader");
-    Map _map(512);
+    Map _map(256);
 
     //Set callback functions for processing mouse inputs.
     glfwSetCursorPosCallback(Window::ID, Iopcs::processInputMouse);
@@ -49,6 +49,8 @@ int main (void)
     sun_mod->Init();
 
     vector<Object> t_rexes;
+
+    //  Create objects using loaded models.
     Object map(map_mod);
     Object t_rex(t_rex_mod);
     Object sun(sun_mod);
@@ -63,6 +65,8 @@ int main (void)
     //  Get light uniforms.
     int lightColor = glGetUniformLocation(objShader.ID, "lightColor");
     int lightPosition = glGetUniformLocation(objShader.ID, "lightPos");
+    int cameraPosition = glGetUniformLocation(objShader.ID, "cameraPos");
+
     glUniform3f(lightColor, 1.0f, 1.0f, 1.0f);
     glUniform3f(lightPosition, 20, -50, 10);
 
@@ -73,7 +77,7 @@ int main (void)
     glUniformMatrix4fv(glGetUniformLocation(objShader.ID, "model"), 1, GL_FALSE, &model[0][0]); 
     glUniformMatrix4fv(glGetUniformLocation(objShader.ID, "view"), 1, GL_FALSE, &Camera::view[0][0]);
 
-    map.MoveObj( glm::vec3( -256, -50, -256 ) );
+    // map.MoveObj( glm::vec3( -256, -50, -256 ) );
 
     /*
      *  Render loop keeps window refreshing as long
@@ -89,6 +93,7 @@ int main (void)
         //  Calculate the view matrix based on camera view.
         Camera::view = glm::lookAt(Camera::CamPos, Camera::CamPos + Camera::CamDir, Camera::CamUp);        
         glUniformMatrix4fv(glGetUniformLocation(objShader.ID, "view"), 1, GL_FALSE, &Camera::view[0][0]);
+        glUniform3fv(cameraPosition, 1, &Camera::CamPos[0]);
 
         // Set the light position.
         glm::vec3 lp = glm::vec3(300 * sin(0.5 * glfwGetTime()), 100, 300 * cos(0.5 * glfwGetTime()));
@@ -103,6 +108,9 @@ int main (void)
         map.Draw(objShader.ID);
         t_rex.Draw(objShader.ID);
         sun.Draw(objShader.ID);
+
+        //Check collision.
+        if( Phy::CheckCollision_VectorWithTerrain(Camera::CamPos, 1.5, map) ) cout << "Collision detected" << endl;
         
         glClearDepth(1);
         ++frames;

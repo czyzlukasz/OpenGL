@@ -1,10 +1,10 @@
 #include "map.hpp"
 
 
-void Map::PerlinNoise(unsigned int grid_size, unsigned int amplitude)
+void Map::PerlinNoise(unsigned int grid_size, unsigned int amplitude, Map *m)
     {
         //Generate random gradient vectors.
-        unsigned int grid_amount = map_length / grid_size + 1;
+        unsigned int grid_amount = m->map_length / grid_size + 1;
         glm::vec2 **GradGrid = new glm::vec2 *[grid_amount];
         for(unsigned int i = 0; i < grid_amount; ++i) GradGrid[i] = new glm::vec2[grid_amount];
         
@@ -18,9 +18,9 @@ void Map::PerlinNoise(unsigned int grid_size, unsigned int amplitude)
         
         // cout << "Calculating grid vectors finished\n";
 
-        for(unsigned int z = 0; z < map_length; ++z)
+        for(unsigned int z = 0; z < m->map_length; ++z)
         {
-            for(unsigned int x = 0; x < map_length; ++x)
+            for(unsigned int x = 0; x < m->map_length; ++x)
             {
                 /*  Calculate coordinates of left corner of the square.
                  *  Square is represented by 4 letters: C  D
@@ -58,12 +58,12 @@ void Map::PerlinNoise(unsigned int grid_size, unsigned int amplitude)
 
                 //Interpolate between each corner to get the value.
                 // cout << "Calculate interpolated values\n";
-                float Interp_AB = CosInterpolate(Dot_A, Dot_B, float(x % grid_size) / grid_size);
-                float Interp_CD = CosInterpolate(Dot_C, Dot_D, float(x % grid_size) / grid_size);
-                float Interp_Final = CosInterpolate(Interp_AB, Interp_CD, float(z % grid_size) / grid_size);
+                float Interp_AB = Map::CosInterpolate(Dot_A, Dot_B, float(x % grid_size) / grid_size);
+                float Interp_CD = Map::CosInterpolate(Dot_C, Dot_D, float(x % grid_size) / grid_size);
+                float Interp_Final = Map::CosInterpolate(Interp_AB, Interp_CD, float(z % grid_size) / grid_size);
                 // cout << "X: " << x << " Z: " << z << " Final value: " << Interp_Final << "\n";
                 // cout << Interp_Final << "\n";
-                terrain[x][z] += (Interp_Final * amplitude);
+                m->terrain[x][z] += (Interp_Final * amplitude);
             }
         }
         delete []GradGrid;
@@ -77,7 +77,7 @@ float Map::Interpolate (float A, float B, float alpha)
 
 float Map::CosInterpolate (float A, float B, float alpha)
 {
-    return Interpolate(A, B, (-cos(alpha * M_PI)/2 + 0.5f));
+    return Map::Interpolate(A, B, (-cos(alpha * M_PI)/2 + 0.5f));
 }
 
 Mesh Map::TerrainToMesh(void){

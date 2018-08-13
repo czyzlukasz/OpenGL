@@ -3,9 +3,15 @@
 #include <memory>
 #include "model.hpp"
 
-
-class Object{
+class PhysicalProp{
+    protected:
+    float mass;
+    glm::vec3 velocity{};
     glm::vec3 position{}, rotation{};
+};
+
+
+class Object : protected PhysicalProp{
 
     public:
     std::shared_ptr<Model> model;
@@ -25,7 +31,7 @@ class Object{
     void Draw(unsigned int ID){
         model->Draw(ID, position);
     };
-
+    
 
 };
 
